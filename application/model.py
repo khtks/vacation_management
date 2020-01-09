@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-from application import db
 import datetime
 
+db = SQLAlchemy()
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)

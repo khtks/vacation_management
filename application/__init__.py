@@ -1,17 +1,16 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
-from application.config import DevelopmentConfig
 
-db = SQLAlchemy()
-
-
-def create_app(test_config=None):
+def create_app(mode='prod'):
     # create and configure the application
 
     app = Flask(__name__)
-    app.config.from_object(DevelopmentConfig())
 
+    from application.config import config_name
+    app.config.from_object(config_name[mode])
+
+    from application.model import db
     db.init_app(app)
 
     from application.db_test import test
@@ -24,5 +23,7 @@ def create_app(test_config=None):
     @app.route('/hello')
     def hello():
         return "hello", 200
+
+    print(app.config)
 
     return app
