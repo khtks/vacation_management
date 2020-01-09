@@ -10,10 +10,8 @@ class Post(db.Model):
     pub_date = db.Column(db.DateTime, nullable=False,
                          default=datetime.datetime.now())
 
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'),
-                            nullable=False)
-    category = db.relationship('Category',
-                               backref=db.backref('posts', lazy=True))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    category = db.relationship('Category', backref=db.backref('posts', lazy=True))
 
     def __repr__(self):
         return '<Post %r>' % self.title
