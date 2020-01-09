@@ -13,9 +13,6 @@ def create_app(mode='prod'):
     from application.model import db
     db.init_app(app)
 
-    from application.db_test import test
-    app.register_blueprint(test.db_test_bp)
-
     @app.route('/')
     def init():
         return "init", 200
@@ -23,7 +20,5 @@ def create_app(mode='prod'):
     @app.route('/hello')
     def hello():
         return "hello", 200
-
-    print(app.config)
 
     return app
