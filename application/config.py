@@ -23,6 +23,7 @@ class TestConfig(Config):
     ENV = 'testing'
     TESTING = True
     DEBUG = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = 'mysql://root:z748159@localhost:3306/test_db'
 
 

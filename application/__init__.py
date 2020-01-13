@@ -1,8 +1,7 @@
-from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
 
 
-def create_app(mode='prod'):
+def create_app(mode='test'):
     # create and configure the application
 
     app = Flask(__name__)
@@ -13,12 +12,14 @@ def create_app(mode='prod'):
     from application.model import db
     db.init_app(app)
 
+    from application.schema import ma
+    ma.init_app(app)
+
+    from application.marshal_test import test
+    app.register_blueprint(test.bp)
+
     @app.route('/')
     def init():
         return "init", 200
-
-    @app.route('/hello')
-    def hello():
-        return "hello", 200
 
     return app
