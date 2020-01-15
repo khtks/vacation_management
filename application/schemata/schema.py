@@ -1,8 +1,6 @@
-from flask_marshmallow import Marshmallow, pprint
-from marshmallow import post_load
-from application.model import *
-
-ma = Marshmallow()
+from flask_marshmallow import Marshmallow
+from application import ma
+from application.models.model import *
 
 
 class PostSchema(ma.ModelSchema):

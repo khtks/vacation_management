@@ -4,7 +4,7 @@ import os
 class Config(object):
     DEBUG = False
     TESTING = False
-    SECRET_KEY = '\x05\x08\\\xf5/\xaf\xbd@'
+    SECRET_KEY = os.urandom(8)
 
 
 class Prodconfig(Config):

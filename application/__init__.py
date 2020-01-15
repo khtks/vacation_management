@@ -1,4 +1,12 @@
-from flask import Flask
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
+from flask_migrate import Migrate
+
+
+db = SQLAlchemy()
+ma = Marshmallow()
+migrate = Migrate()
 
 
 def create_app(mode='test'):
@@ -9,17 +17,15 @@ def create_app(mode='test'):
     from application.config import config_name
     app.config.from_object(config_name[mode])
 
-    from application.model import db
     db.init_app(app)
-
-    from application.schema import ma
     ma.init_app(app)
+    migrate.init_app(app, db)
 
-    from application.marshal_test import test
-    app.register_blueprint(test.bp)
+    from application.views import post
+    app.register_blueprint(post.post_bp)
 
     @app.route('/')
     def init():
-        return "init", 200
+        return render_template('homepage.html')
 
     return app
