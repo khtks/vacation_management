@@ -12,7 +12,10 @@
     </form>
 
     <div>
-        &nbsp; Result : {{result}}
+        &nbsp; Result
+        {% for x in result %}
+        <div id="name">{{ x }}</div>
+        {% endfor %}
     </div>
 
 </body>
