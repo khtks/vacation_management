@@ -7,16 +7,16 @@ class Config(object):
     SECRET_KEY = os.urandom(8)
 
 
-class Prodconfig(Config):
+class ProdConfig(Config):
     ENV = 'production'
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:z748159@localhost:3306/prod_db'
+    SQLALCHEMY_DATABASE_URI = 'mysql://sam:z748159!@localhost:3306/prod_db'
 
 
 class DevConfig(Config):
     ENV = 'development'
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:z748159@localhost:3306/dev_db'
+    SQLALCHEMY_DATABASE_URI = 'mysql://sam:z748159!@localhost:3306/dev_db'
 
 
 class TestConfig(Config):
@@ -24,11 +24,11 @@ class TestConfig(Config):
     TESTING = True
     DEBUG = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = 'mysql://root:z748159@localhost:3306/test_db'
+    SQLALCHEMY_DATABASE_URI = 'mysql://sam:z748159!@localhost:3306/test_db'
 
 
 config_name = dict(
-    prod=Prodconfig,
+    prod=ProdConfig,
     dev=DevConfig,
     test=TestConfig
 )
