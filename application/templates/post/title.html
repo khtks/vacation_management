@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <br><br>
+        &nbsp;&nbsp;Current title : {{title}}
+    <br><br>
+    <form method="post">
+        &nbsp;&nbsp;Title : <input type="text" name="title_name"/>&nbsp;
+        <br><br><br>
+        &nbsp;&nbsp;<input type="submit" value="Read" formaction="/post/read"/>
+        &nbsp;&nbsp;<input type="button" name="read all" value="read all" onclick="location.href='/post/read_all'"/><br><br>
+
+        &nbsp;&nbsp;<input type="submit" value="Delete" formaction="/post/delete"/>
+        &nbsp;&nbsp;<input type="button" name="delete all" value="Delete all" onclick="location.href='/post/delete_all'"/>
+
+    </form>
+</body>
+</html>

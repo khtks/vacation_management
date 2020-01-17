@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+        <form action="/post/create" method="post">
+            <br>
+            &nbsp;Title : <input type="text" name="title" ><br><br>
+            &nbsp;Body : <input type="text" name="body"><br><br>
+            &nbsp;Category : <input type="text" name="category"><br><br>
+            <div>
+                &nbsp;Current category name : {{category_list}}
+            </div>
+            <br>
+            &nbsp;<input type="submit" name="commit">
+        </form>
+</body>
+</html>
