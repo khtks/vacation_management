@@ -1,5 +1,5 @@
 from application import ma
-from application.models.post import *
+from application.models.post_model import *
 
 
 class PostSchema(ma.ModelSchema):

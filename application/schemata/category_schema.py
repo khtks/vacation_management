@@ -1,6 +1,6 @@
 from flask_marshmallow import Marshmallow
 from application import ma
-from application.models.category import *
+from application.models.category_model import *
 
 
 class CategorySchema(ma.ModelSchema):
