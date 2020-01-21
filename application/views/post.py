@@ -1,4 +1,7 @@
-from application.schemata.schema import *
+from application.schemata.post_schema import PostSchema
+from application.models.post import Post
+from application.models.category import Category
+from application import db
 from flask import Blueprint, render_template, request, redirect, url_for
 
 post_bp = Blueprint("marshalling", __name__, url_prefix='/post')
