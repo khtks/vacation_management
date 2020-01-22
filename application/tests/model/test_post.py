@@ -18,5 +18,5 @@ def test_create_post_in_db(post):
     assert post_in_db.title == post.title
 
 
-def test_get_name(post):
+def test_get_title(post):
     assert post.title == post.get_title()

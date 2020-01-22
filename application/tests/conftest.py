@@ -29,11 +29,11 @@ def connection(app):
     connection.close()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='module')
 def session(connection):
-    transaction = connection.begin()
     session = _db.scoped_session(_db.sessionmaker(bind=connection))
-    db.session = session
+    _db.session = session
+    transaction = connection.begin()
 
     yield session
 
