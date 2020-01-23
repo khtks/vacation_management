@@ -1,6 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
-from application import db
 import datetime
+from application import db
 
 
 class Post(db.Model):
@@ -8,7 +7,6 @@ class Post(db.Model):
     title = db.Column(db.String(80), nullable=False)
     body = db.Column(db.Text, nullable=False)
     pub_date = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
-    test = db.Column(db.String(20), nullable=True)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     category = db.relationship('Category', backref=db.backref('posts', lazy=True))
@@ -18,14 +16,3 @@ class Post(db.Model):
 
     def get_title(self):
         return self.title
-
-
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-
-    def __repr__(self):
-        return '<Category name : %r>' % self.name
-
-    def get_name(self):
-        return self.name
