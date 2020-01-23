@@ -1,6 +1,5 @@
-from application import db
-from application.models import category_model
 import datetime
+from application import db
 
 
 class Post(db.Model):

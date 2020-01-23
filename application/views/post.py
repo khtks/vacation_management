@@ -1,6 +1,6 @@
-from application.schemata.post_schema import PostSchema
-from application.models.post_model import Post
-from application.models.category_model import Category
+from application.schemata.post import PostSchema
+from application.models.post import Post
+from application.models.category import Category
 from application import db
 from flask import Blueprint, render_template, request, redirect, url_for
 

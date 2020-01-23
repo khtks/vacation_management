@@ -1,5 +1,5 @@
 import pytest
-from application.models.post_model import *
+from application.models.post import *
 from application.tests.model.test_category import *
 
 
