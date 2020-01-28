@@ -69,13 +69,3 @@ def input_info():
     return render_template('post/input_info.html', category=[x.get_name() for x in Category.query.all()])
 
 
-@post_bp.route('/select_id', methods=['POST', 'GET'])
-def select_id():
-
-    if request.method == 'POST':
-        return redirect(url_for('post.post_item', id=request.form['id']))
-
-    else:
-        return render_template('post/select_id.html', id=[x.get_id() for x in Post.query.all()])
-
-
