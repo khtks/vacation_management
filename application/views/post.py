@@ -51,12 +51,12 @@ def post_item(id):
             session.commit()
             return post_schema.dumps(new_post)
         else:
-            old_post = post_schema.dumps(Post.query.get(id))
+            old_post = str(Post.query.get(id))
             new_post = Post.query.get(id)
             new_post.title = request.form['title']
             new_post.body = request.form['body']
             session.commit()
-            return render_template('post/put_result.html', old_post=old_post, new_post=post_schema.dumps(new_post))
+            return render_template('post/put_result.html', old_post=old_post, new_post=new_post)
 
     elif request.method == 'DELETE':
         Post.query.filter(Post.id == id).delete()
@@ -65,15 +65,17 @@ def post_item(id):
 
 
 @post_bp.route('/information')
-def get_info():
-    return render_template('post/get_info.html', category=[x.get_name() for x in Category.query.all()])
+def input_info():
+    return render_template('post/input_info.html', category=[x.get_name() for x in Category.query.all()])
 
 
-@post_bp.route('/select_id', methods=['POST', 'GET', 'PUT', 'DELETE'])
+@post_bp.route('/select_id', methods=['POST', 'GET'])
 def select_id():
 
-    if request.method == 'GET':
+    if request.method == 'POST':
+        return redirect(url_for('post.post_item', id=request.form['id']))
+
+    else:
         return render_template('post/select_id.html', id=[x.get_id() for x in Post.query.all()])
 
-    elif request.method == 'POST':
-        return redirect(url_for('post.post_item', id=request.form['id']))
+
