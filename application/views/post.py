@@ -1,11 +1,12 @@
 from application.schemata.post import PostSchema
 from application.models.post import Post
-from application.models.category import Category
+from application.models.category import *
 from application import db
 from flask import Blueprint, render_template, request, redirect, url_for
 
-post_bp = Blueprint("marshalling", __name__, url_prefix='/post')
+post_bp = Blueprint("post", __name__, url_prefix='/post')
 post_schema = PostSchema()
+session = db.session
 
 
 @post_bp.route('/main')
@@ -13,89 +14,66 @@ def post_main():
     return render_template('post/main.html')
 
 
-@post_bp.route('/create', methods=['POST'])
-def post_create():
-    title = request.form['title']
-    body = request.form['body']
-    category_list = Category.query.all()
+@post_bp.route('/', methods=['POST', 'GET', 'DELETE'])
+def post():
 
-    for i in category_list:
-        if request.form['category'] == i.get_name():
-            post = Post(title=title, body=body, category=i)
-            db.session.add(post)
-            db.session.commit()
-            return render_template('post/create.html', post=post)
+    if request.method == "POST":
+        category = Category.query.filter(Category.name == request.form['category']).first()
 
-    category = Category(name=request.form['category'])
-    post = Post(title=title, body=body, category=category)
-    db.session.add(post)
-    db.session.commit()
-    return render_template('post/create.html', post=post)
+        if not category:
+            category = Category(name=request.form['category'])
+            session.add(category)
 
+        post = Post(title=request.form['title'], body=request.form['body'], category=category)
+        session.add(post)
+        session.commit()
+        return render_template('post/create_result.html', post=post, result=Post.query.all())
 
-@post_bp.route('<topic>/input')
-def post_input(topic):
-    if topic == "create":
-        category_list = Category.query.all()
-        # category_list = list(map(lambda x: x.get_name(), category_list))
-        category_list = [x.get_name() for x in category_list]
+    elif request.method == "GET":
+        return render_template('post/read_all.html', result=Post.query.all())
 
-        return render_template('post/create_input.html', category_list=category_list)
-
-    if topic == "update":
-        post_list = Post.query.all()
-        # post_list = list(map(lambda x: x.get_name(), post_list))
-        post_list = [x.get_name() for x in post_list]
-
-        return render_template('post/create_input.html', category_list=post_list)
+    elif request.method == "DELETE":
+        id = [x.get_id() for x in Post.query.all()]
+        session.query(Post).delete()
+        session.commit()
+        return render_template('post/delete_result.html', id=id, result=Post.query.all())
 
 
-@post_bp.route('/delete/select_title')
-@post_bp.route('/read/select_title')
-def select_title():
-    post_list = Post.query.all()
-    result = [x for x in post_list]
-    return render_template('post/title.html', title=str(set(result)))
+@post_bp.route('/<id>', methods=['GET', 'PUT', 'DELETE'])
+def post_item(id):
+    if request.method == 'GET':
+        return render_template('post/read.html', id=id, result=Post.query.get(id))
+
+    elif request.method == 'PUT':
+        if not Post.query.get(id):
+            new_post = Post(title="put title", body="put body", category=Category(id=id, name="put category"))
+            session.add(new_post)
+            session.commit()
+            return post_schema.dumps(new_post)
+        else:
+            old_post = post_schema.dumps(Post.query.get(id))
+            new_post = Post.query.get(id)
+            new_post.title = request.form['title']
+            new_post.body = request.form['body']
+            session.commit()
+            return render_template('post/put_result.html', old_post=old_post, new_post=post_schema.dumps(new_post))
+
+    elif request.method == 'DELETE':
+        Post.query.filter(Post.id == id).delete()
+        session.commit()
+        return render_template('post/delete_result.html', id=id, result=Post.query.all())
 
 
-@post_bp.route('/read_all')
-def post_read_all():
-    post_list = Post.query.all()
-
-    return render_template('post/read_all.html', result=post_list)
+@post_bp.route('/information')
+def get_info():
+    return render_template('post/get_info.html', category=[x.get_name() for x in Category.query.all()])
 
 
-@post_bp.route('/read', methods=['POST'])
-def post_read():
-    post_list = Post.query.filter(Post.title == request.form['title_name']).all()
+@post_bp.route('/select_id', methods=['POST', 'GET', 'PUT', 'DELETE'])
+def select_id():
 
-    if len(post_list) == 0:
-        return "Not in the Post", 400
+    if request.method == 'GET':
+        return render_template('post/select_id.html', id=[x.get_id() for x in Post.query.all()])
 
-    return post_schema.dumps(post_list, many=True)
-
-
-@post_bp.route('/update')
-def post_update():
-    pass
-
-
-@post_bp.route('/delete', methods=['POST'])
-def post_delete():
-    post_list = Post.query.filter(Post.title == request.form['title_name']).all()
-
-    for i in post_list:
-        db.session.delete(i)
-    db.session.commit()
-
-    return render_template('post/delete_result.html', result=Post.query.all())
-
-
-@post_bp.route('/delete_all')
-def post_delete_all():
-    post_list = Post.query.all()
-    for i in post_list:
-        db.session.delete(i)
-    db.session.commit()
-
-    return render_template('post/delete_result.html', result=Post.query.all())
+    elif request.method == 'POST':
+        return redirect(url_for('post.post_item', id=request.form['id']))

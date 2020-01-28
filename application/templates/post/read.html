@@ -6,17 +6,14 @@
 </head>
 <body>
 
-    <form action="/marshal/post/read/{{title}}" method="post" enctype="application/json">
-        &nbsp;Title : <input type="text" name="title" ><br>
-        &nbsp;<input type="submit" name="Commit">
-    </form>
-
     <div>
-        &nbsp; Result
-        {% for x in result %}
-        <div id="name">{{ x }}</div>
-        {% endfor %}
+        <br>
+        &nbsp;id : {{id}}<br><br>
+        &nbsp;Result : {{result}}
     </div>
+
+    <br><br>
+    &nbsp;<input type="button" name="main" value="Main" onclick="location.href='/post/main'"/>
 
 </body>
 </html>

@@ -1,5 +1,6 @@
 import datetime
 from application import db
+from application.models.category import Category
 
 
 class Post(db.Model):
@@ -12,7 +13,13 @@ class Post(db.Model):
     category = db.relationship('Category', backref=db.backref('posts', lazy=True))
 
     def __repr__(self):
-        return '<Post id : %r, title : %r, body : %r>' % (self.id, self.title, self.body)
+        return '<Post id : %r,  title : %r,  body : %r>' % (self.id, self.title, self.body)
 
     def get_title(self):
         return self.title
+
+    def get_id(self):
+        return self.id
+
+    def show_info(self):
+        return '<Post id : %r,  title : %r,  body : %r,  category : %r,  pub_date : %r>' % (self.id, self.title, self.body, self.category.get_name(), str(self.pub_date))
