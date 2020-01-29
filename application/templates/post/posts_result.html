@@ -5,13 +5,11 @@
     <title>Title</title>
 </head>
 <body>
+
     &nbsp;Current post <br>
     {% for x in result %}
-    <div id="name">{{ x }}</div>
+    <div id="name">&nbsp;{{ x }}</div>
     {% endfor %}
-
-    <br><br>
-    &nbsp;<input type="button" name="main" value="Main" onclick="location.href='/post/main'"/>
 
 </body>
 </html>

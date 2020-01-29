@@ -2,11 +2,13 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
+from flask_restful import Api
 
 
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
+api = Api
 
 
 def create_app(mode='test'):
@@ -26,6 +28,6 @@ def create_app(mode='test'):
 
     @app.route('/')
     def init():
-        return render_template('homepage.html')
+        return "Vacation Management Project"
 
     return app
