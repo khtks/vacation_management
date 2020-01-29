@@ -21,5 +21,5 @@ class Post(db.Model):
     def get_id(self):
         return self.id
 
-    def show_info(self):
+    def get_info(self):
         return '<Post id : %r,  title : %r,  body : %r,  category : %r,  pub_date : %r>' % (self.id, self.title, self.body, self.category.get_name(), str(self.pub_date))
