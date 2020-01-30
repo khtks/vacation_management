@@ -1,6 +1,6 @@
 import pytest
-from application import create_app, db as _db, db
-from sqlalchemy import create_engine, log
+from application import create_app, db as _db
+from sqlalchemy import create_engine
 
 
 @pytest.fixture(scope='session')
@@ -19,6 +19,15 @@ def client(app):
     return app.test_client()
 
 
+@pytest.fixture(scope='session')
+def db(app):
+    _db.create_all()
+
+    yield _db
+
+    _db.drop_all()
+
+
 @pytest.fixture(scope='module')
 def connection(app):
     engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
@@ -30,9 +39,9 @@ def connection(app):
 
 
 @pytest.fixture(scope='function')
-def session(connection):
-    session = _db.scoped_session(_db.sessionmaker(bind=connection))
-    _db.session = session
+def session(connection, db):
+    session = db.scoped_session(db.sessionmaker(bind=connection))
+    db.session = session
     transaction = connection.begin()
 
     yield session
