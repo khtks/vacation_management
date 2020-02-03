@@ -11,7 +11,7 @@ migrate = Migrate()
 api = Api
 
 
-def create_app(mode='test'):
+def create_app(mode='dev'):
     # create and configure the application
 
     app = Flask(__name__)
@@ -23,8 +23,12 @@ def create_app(mode='test'):
     ma.init_app(app)
     migrate.init_app(app, db)
 
-    from application.views import post
-    app.register_blueprint(post.post_bp)
+    from application.views.user_info import user_info_bp
+    from application.views.used_vacation import used_vacation_bp
+    from application.views.remain_vacation import remain_vacation_bp
+    app.register_blueprint(user_info_bp)
+    app.register_blueprint(used_vacation_bp)
+    app.register_blueprint(remain_vacation_bp)
 
     @app.route('/')
     def init():
