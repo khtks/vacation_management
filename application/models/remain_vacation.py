@@ -8,5 +8,5 @@ class RemainVacation(db.Model):
     total_vacation = db.Column(db.Integer, nullable=False)
     remain_vacation = db.Column(db.Integer, nullable=False)
 
-    def __ref__(self):
+    def __repr__(self):
         return "<Remain Vacation> Google id : %r,  Number of year : %r,  Total vacation : %r,  Remain vacation : %r" % (self.google_id, self.number_of_year, self.total_vacation, self.remain_vacation)

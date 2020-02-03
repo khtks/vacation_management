@@ -9,5 +9,5 @@ class UsedVacation(db.Model):
     type = db.Column(db.String(10), nullable=False)
     reference = db.Column(db.String(30), nullable=True)
 
-    def __ref__(self):
-        return "<Used Vacation> Google id : %r,  Start date : %r,  End date : %r,  type : %r" % (self.google_id, self.start_date, self.end_date, self.type)
+    def __repr__(self):
+        return "<Used Vacation> Google id : %r,  Start date : %r,  End date : %r,  type : %r" % (self.google_id, str(self.start_date), str(self.end_date), self.type)
