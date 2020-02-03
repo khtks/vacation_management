@@ -9,7 +9,6 @@ verify_ssl = true
 flask = "*"
 flask-sqlalchemy = "*"
 flask-marshmallow = "*"
-flask-migrate = "*"
 marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 mysql = "*"
@@ -17,6 +16,8 @@ mysqlclient = "*"
 pytest = "*"
 flask-restful = "*"
 requests = "*"
+pytest-bdd = "*"
+flask-migrate = "*"
 
 [requires]
 python_version = "3.8"

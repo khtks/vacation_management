@@ -5,6 +5,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     SECRET_KEY = os.urandom(8)
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class ProdConfig(Config):
