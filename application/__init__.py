@@ -11,7 +11,7 @@ migrate = Migrate()
 api = Api
 
 
-def create_app(mode='dev'):
+def create_app(mode='test'):
     # create and configure the application
 
     app = Flask(__name__)
