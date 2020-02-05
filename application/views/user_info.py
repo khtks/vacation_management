@@ -24,6 +24,7 @@ class AllUsers(Resource):
         return make_response(user_schema.dumps(user), 201)
 
     def delete(self):
+        #권한 추가하기
         session.query(UserInfo).delete()
         session.commit()
         result = session.query(UserInfo).all()
@@ -31,7 +32,7 @@ class AllUsers(Resource):
 
 
 class User(Resource):
-    def get(self):
+    def get(self, google_id):
         pass
 
     def put(self):
@@ -41,5 +42,5 @@ class User(Resource):
         pass
 
 
-api.add_resource(AllUsers, '/', methods=['GET', 'POST', 'DELETE'])
-api.add_resource(User, '/<string:google_id>', methods=['GET', 'PUT', 'DELETE'])
+api.add_resource(AllUsers, '/')
+api.add_resource(User, '/<string:google_id>')

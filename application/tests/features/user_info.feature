@@ -1,4 +1,4 @@
-Feature: User_info API
+Feature: User info API
   As a API user,
   I want to CRUD user info in database,
   so my application should do right action
@@ -7,29 +7,30 @@ Feature: User_info API
     Given server has user_info database
 
 
-  Scenario: Create user
+  Scenario Outline: Create user
     When I Request to the appropriate <uri> and <method>
-      Example:
-        | uri                              | method |
-        | http://127.0.0.1:5000/user-info/ | post  |
-
     When server got appropriate json data
-    Then user object have to create and register in user_info database
+    Then user object have to register in user_info database
+
+    Examples:
+        | uri                              | method |
+        | http://127.0.0.1:5000/user-info/ | post   |
 
 
-  Scenario: Read all user
+  Scenario Outline: Read all user information
     When I Request to the appropriate <uri> and <method>
-      Example:
+    Then I receive all user information
+
+
+    Examples:
         | uri                              | method |
         | http://127.0.0.1:5000/user-info/ | get   |
 
-    Then I receive all user information and right response code
 
-
-  Scenario: Delete all user
+  Scenario Outline: Delete all user information
     When I Request to the appropriate <uri> and <method>
-      Example:
-        | uri                              | method |
-        | http://127.0.0.1:5000/user-info/ | delete   |
-
     Then all user info data should be deleted in database
+
+    Examples:
+        | uri                              | method |
+        | http://127.0.0.1:5000/user-info/ | delete |

@@ -13,3 +13,5 @@ class UserInfo(db.Model):
     def __repr__(self):
         return "<User Info> Id : %r,   Google id : %r,  Name : %r,  Entry date : %r,  Admin : %r" % (self.id, self.google_id, self.en_name, str(self.entry_date), self.admin)
 
+    def get_id(self):
+        return self.id
