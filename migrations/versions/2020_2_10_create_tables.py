@@ -1,8 +1,8 @@
-"""create table
+"""create tables
 
-Revision ID: e13528213bbc
+Revision ID: 8d61227b13cf
 Revises: 
-Create Date: 2020-02-03 15:53:48.592792
+Create Date: 2020-02-10 17:02:06.489084
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e13528213bbc'
+revision = '8d61227b13cf'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,27 +22,31 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('google_id', sa.String(length=30), nullable=False),
     sa.Column('number_of_year', sa.Integer(), nullable=False),
-    sa.Column('total_vacation', sa.Integer(), nullable=False),
-    sa.Column('remain_vacation', sa.Integer(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('total_vacation', sa.Float(), nullable=False),
+    sa.Column('remain_vacation', sa.Float(), nullable=False),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('google_id')
     )
     op.create_table('used_vacation',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('google_id', sa.String(length=30), nullable=False),
-    sa.Column('start_date', sa.DateTime(), nullable=False),
-    sa.Column('end_date', sa.DateTime(), nullable=False),
+    sa.Column('start_date', sa.Date(), nullable=False),
+    sa.Column('end_date', sa.Date(), nullable=False),
     sa.Column('type', sa.String(length=10), nullable=False),
     sa.Column('reference', sa.String(length=30), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('google_id')
     )
     op.create_table('user_info',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('google_id', sa.String(length=30), nullable=False),
     sa.Column('ko_name', sa.String(length=5), nullable=True),
     sa.Column('en_name', sa.String(length=10), nullable=False),
-    sa.Column('entry_date', sa.DateTime(), nullable=True),
-    sa.Column('admin', sa.Boolean(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('entry_date', sa.DateTime(), nullable=False),
+    sa.Column('admin', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('en_name'),
+    sa.UniqueConstraint('google_id')
     )
     # ### end Alembic commands ###
 
