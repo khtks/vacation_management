@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '8d61227b13cf'
+revision = '4d85b69aa23e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -43,7 +43,7 @@ def upgrade():
     sa.Column('ko_name', sa.String(length=5), nullable=True),
     sa.Column('en_name', sa.String(length=10), nullable=False),
     sa.Column('entry_date', sa.DateTime(), nullable=False),
-    sa.Column('admin', sa.Integer(), nullable=True),
+    sa.Column('admin', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('en_name'),
     sa.UniqueConstraint('google_id')

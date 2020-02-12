@@ -21,7 +21,6 @@ def client(app):
     yield client
 
 
-
 @pytest.fixture(scope='session')
 def db(app):
     _db.create_all()
@@ -48,16 +47,6 @@ def session(connection, db):
     db.session = session
 
     yield session
-
+    print("\n*********** ROLLBACK ***********")
     transaction.rollback()
     session.close()
-
-
-@pytest.fixture(scope='session')
-def user_schema():
-    schema = UserInfoSchema()
-
-    yield schema
-
-
-
