@@ -23,10 +23,10 @@ def create_app(mode='dev'):
     ma.init_app(app)
     migrate.init_app(app, db)
 
-    from application.views.user_info import user_info_bp
+    from application.views.user import user_bp
     from application.views.used_vacation import used_vacation_bp
     from application.views.remain_vacation import remain_vacation_bp
-    app.register_blueprint(user_info_bp)
+    app.register_blueprint(user_bp)
     app.register_blueprint(used_vacation_bp)
     app.register_blueprint(remain_vacation_bp)
 

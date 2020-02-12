@@ -1,7 +1,6 @@
 import pytest
 from application import create_app, db as _db
 from sqlalchemy import create_engine
-from application.schemata.user_info import UserInfoSchema
 
 
 @pytest.fixture(scope='session', autouse=True)
