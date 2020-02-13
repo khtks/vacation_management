@@ -111,7 +111,6 @@ def test_사용자_없음_실패(session):
 
 @when(parsers.parse("올바른 {uri}에 삭제할 id을 넘겨 주면"))
 def request_uri(client, uri, admin_user):
-    print(User.query.all())
     uri = uri + str(123)
     response = client.delete(uri, data=dict(id=admin_user.id))
 

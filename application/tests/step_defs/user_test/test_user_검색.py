@@ -22,7 +22,6 @@ def test_전체_사용자_검색():
 
 @given("DB에 user들이 있어야 한다")
 def users_are_in_db(client, user, session):
-    print(User.query.all())
     for i in range(3):
         user.google_id = str(random.randint(1, 9)) + "_" + user.get_google_id()
         user.en_name = str(random.randint(1, 9)) + "_" + user.get_en_name()
