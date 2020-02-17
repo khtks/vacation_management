@@ -34,8 +34,8 @@ def upgrade():
     sa.Column('end_date', sa.Date(), nullable=False),
     sa.Column('type', sa.String(length=10), nullable=False),
     sa.Column('reference', sa.String(length=30), nullable=True),
+    sa.Column('event_id', sa.String(length=200), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('google_id')
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
