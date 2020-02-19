@@ -29,6 +29,7 @@ def upgrade():
     )
     op.create_table('used_vacation',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('summary', sa.String(length=30), nullable=False),
     sa.Column('google_id', sa.String(length=30), nullable=False),
     sa.Column('start_date', sa.Date(), nullable=False),
     sa.Column('end_date', sa.Date(), nullable=False),

@@ -53,7 +53,8 @@ def test_휴가_정상_삭제():
 
 @given("google calendar에 등록되어 있는 휴가가 있다")
 def registered_vacation(session):
-    used_vacation = UsedVacation(user=User(google_id="khtks@naver.com", en_name="Hammington"), start_date=datetime.datetime(2020,2,2), end_date=datetime.datetime(2020,2,3), type="vacation", event_id='4qnk7nlk6upmfo651asrbs6ncm')
+    used_vacation = UsedVacation(user=User(google_id="khtks@naver.com", en_name="Hammington"), summary="휴가 반차", \
+                                 start_date=datetime.datetime(2020,2,2), end_date=datetime.datetime(2020,2,3), type="vacation", event_id='4qnk7nlk6upmfo651asrbs6ncm')
     session.add(used_vacation)
     session.commit()
 

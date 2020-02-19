@@ -3,16 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow, pprint
 from flask_migrate import Migrate
 from flask_restful import Api
+from application.calendar_config import get_service
 
 
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
 api = Api
+service = get_service()
 
 
 def create_app(mode='dev'):
-    # create and configure the application
 
     app = Flask(__name__)
 
