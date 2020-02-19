@@ -8,8 +8,8 @@ import datetime
 
 
 used_vacation_bp = Blueprint("used_vacation", __name__, url_prefix='/users/vacations/')
-api = api(used_vacation_bp)
 used_vacation_schema = UsedVacationSchema()
+api = api(used_vacation_bp)
 maxResult = 2500
 service = service
 # 'bluewhale.kr_0gbuu26gl7vue837u7f07mn360@group.calendar.google.com'  <== AIMMO Google calednar id
