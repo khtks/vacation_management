@@ -54,7 +54,7 @@ def new_vacation():
 
 @then("used_vacation db에 휴가를 등록한다")
 def register_used_vacation(client):
-    response = client.post('users/vacations/used/')
+    response = client.post('users/vacations/used')
     assert response.status_code == 201
 
 
@@ -75,4 +75,4 @@ def another_user(session):
 
 @then("user가 없으므로 휴가 생성 불가")
 def fail_caused_by_no_user(client):
-    response = client.post('users/vacations/used/')
+    response = client.post('users/vacations/used')

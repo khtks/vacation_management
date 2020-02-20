@@ -29,7 +29,6 @@ def no_user_in_db(session):
 @pytest.yield_fixture
 @when(parsers.parse("올바른 {uri}에 값을 넘겨줄 때"))
 def request_uri(client, user, uri, session):
-    print(User.query.all())
     response = client.post(uri, data=user_schema.dump(user))
     data = user_schema.load(response.json, session=session)
     print(response)

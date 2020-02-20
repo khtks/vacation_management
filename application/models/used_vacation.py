@@ -7,7 +7,7 @@ class UsedVacation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     user_id = db.Column(db.String(30), db.ForeignKey('user.google_id'), nullable=False)
-    user = db.relationship('User', backref=db.backref('used_vacations', lazy=True))
+    user = db.relationship('User', backref=db.backref('used_vacations', cascade='all, delete', lazy=True))
     summary = db.Column(db.String(30), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)

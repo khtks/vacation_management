@@ -39,21 +39,17 @@ class UserUsedVacation(Resource):
         events = events_result.get('items', [])
 
         for event in events:
-            used_vacation = None
+            if "휴가" in event['summary'] or "연차" in event['summary'] or "반차" in event['summary']:
+                if UsedVacation.query.filter_by(event_id=event['id']).one_or_none():
+                    continue
+                else:
+                    user, summary, start, end, type, event_id = Attribute(event)
+                    used_vacation = UsedVacation(user=user, summary=summary, start_date=start, end_date=end, type=type, event_id=event_id)
 
-            if "휴가" in event['summary'] and "대체" not in event['summary'] and "반차" not in event['summary']:
-                attr = Attribute(event)
-                used_vacation = UsedVacation(user=attr.user, summary=attr.summary, start_date=attr.start, end_date=attr.end, type="vacation", event_id=attr.event_id)
-            if "연차" in event['summary'] and "대체" not in event['summary'] and "반차" not in event['summary']:
-                attr = Attribute(event)
-                used_vacation = UsedVacation(user=attr.user, summary=attr.summary, start_date=attr.start, end_date=attr.end, type="vacation", event_id=attr.event_id)
-            if "반차" in event['summary']:
-                attr = Attribute(event)
-                used_vacation = UsedVacation(user=attr.user, summary=attr.summary, start_date=attr.start, end_date=attr.end, type="half", event_id=attr.event_id)
+                if used_vacation is not None:
+                    db.session.add(used_vacation)
+                    db.session.commit()
 
-            if used_vacation is not None and not UsedVacation.query.filter_by(event_id=event['id']).first():
-                db.session.add(used_vacation)
-                db.session.commit()
         return Response("register used vacation", 201)
 
     def delete(self, id=None):
@@ -69,7 +65,6 @@ class UserUsedVacation(Resource):
                     event = UsedVacation.query.filter_by(event_id=event['id']).first()
                     db.session.delete(event)
                     db.session.commit()
-
             return Response("used vacation has been deleted", 200)
 
         if id is not None:
@@ -79,16 +74,26 @@ class UserUsedVacation(Resource):
 
             user = User.query.get(id)
             events = UsedVacation.query.filter_by(user=user).delete()
+            db.session.commit()
             return Response("Delete specific user vacation", 200)
 
 
-api.add_resource(UserUsedVacation, '/used/', '/<string:id>/used/')
+api.add_resource(UserUsedVacation, '/used', '/<string:id>/used')
 
 
-class Attribute:
-    def __init__(self, event):
-        self.user = User.query.filter_by(google_id=event['creator'].get('email')).first()
-        self.summary = event['summary']
-        self.start = event['start'].get('date') if event['start'].get('date') else event['start'].get('dateTime')[0:10]
-        self.end = event['end'].get('date') if event['end'].get('date') else event['end'].get('dateTime')[0:10]
-        self.event_id = event['id']
+def Attribute(event):
+    user = User.query.filter_by(google_id=event['creator'].get('email')).first()
+    summary = event['summary']
+    start = event['start'].get('date') if event['start'].get('date') else event['start'].get('dateTime')[0:10]
+    end = event['end'].get('date') if event['end'].get('date') else event['end'].get('dateTime')[0:10]
+
+    if "휴가" in summary and "대체" not in summary and "반차" not in summary:
+        type = "연차"
+    if "연차" in summary and "대체" not in summary and "반차" not in summary:
+        type = "연차"
+    if "반차" in summary:
+        type = "반차"
+
+    event_id = event['id']
+
+    return user, summary, start, end, type, event_id

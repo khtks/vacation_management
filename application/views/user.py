@@ -3,6 +3,7 @@ from application.models.user import User
 from application.schemata.user import UserSchema
 from flask import Blueprint, request, Response
 from flask_restful import Resource
+import datetime
 
 user_bp = Blueprint("users", __name__, url_prefix='/users')
 user_schema = UserSchema()
@@ -13,9 +14,8 @@ api = api(user_bp)
 class AllUsers(Resource):
     def get(self):
         user = User.query.get(request.form.get('id'))
-
         if not user.admin:
-            return Response(user_schema.dumps(user), 401, mimetype='application/json')
+            return Response("No Authority", 401, mimetype='application/json')
         result = User.query.all()
         return Response(user_schema.dumps(result, many=True), 200, mimetype='application/json')
 
@@ -55,13 +55,13 @@ class SpecificUser(Resource):
                 if data.get('en_name'):
                     target_user.en_name = data['en_name']
                 if data.get('entry_date'):
-                    target_user.entry_date = data['entry_date']
+                    target_user.entry_date = datetime.datetime.strptime(data['entry_date'], '%Y-%m-%d %H:%M:%S')
                 if data.get('admin'):
                     target_user.admin = data['admin']
 
         else: # 사용자가 일반 사용자일 경우
             if id != data['id']: # 수정하려고 하는 대상이 자기 자신이 아닌 경우
-                return Response(user_schema.dumps(target_user), 400, mimetype='application/json')
+                return Response("No Authority", 400, mimetype='application/json')
             elif id == data['id']: # 수정하교 하는 대상이 자기 자신일 경우
                 if data.get('google_id'):
                     target_user.google_id = data['google_id']
@@ -70,9 +70,9 @@ class SpecificUser(Resource):
                 if data.get('ko_name'):
                     target_user.ko_name = data['ko_name']
                 if data.get('entry_date'):
-                    target_user.entry_date = data['entry_date']
+                    target_user.entry_date = datetime.datetime.strptime(data['entry_date'], '%Y-%m-%d %H:%M:%S')
                 if data.get('admin'): # 일반 사용자는 admin 수정 불가
-                    return Response(user_schema.dumps(target_user), 401, mimetype='application/json')
+                    return Response("No Authority", 401, mimetype='application/json')
 
         session.commit()
         return Response(user_schema.dumps(target_user), 200, mimetype='application/json')
