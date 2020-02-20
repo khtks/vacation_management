@@ -16,8 +16,8 @@ Scenario Outline: 관리자가 다른 사용자의 휴가 검색
 
   Examples:
     | uri                      |
-    | /users/vacations/used/   |
-#    | /users/vacations/3/used/ |
+    | /users/vacations/used   |
+#    | /users/vacations/3/used |
 
 
 Scenario: 일반 사용자가 다른 사람의 휴가를 검색할 경우 실패

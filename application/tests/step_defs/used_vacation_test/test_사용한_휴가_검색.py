@@ -54,7 +54,7 @@ def test_자신의_휴가_검색():
 
 @given("DB에 사용자와 휴가 기록이 있다")
 def data_in_db(client, session, general_user):
-    response = client.post('/users/vacations/used/')
+    response = client.post('/users/vacations/used')
 
     assert response.status_code == 201
     assert User.query.all()
@@ -65,7 +65,7 @@ def data_in_db(client, session, general_user):
 @pytest.yield_fixture
 @when("사용자가 자신이 사용한 휴가 검색")
 def search_used_vacation(client, session, data_in_db):
-    uri = '/users/vacations/' + str(data_in_db.id) + '/used/'
+    uri = '/users/vacations/' + str(data_in_db.id) + '/used'
     response = client.get(uri, data={"id": data_in_db.id})
 
     assert response.status_code == 200
@@ -120,7 +120,7 @@ def user_is_general(general_user):
 
 @when("다른 사용자의 휴가를 검색할 경우")
 def request_another_used_vacation(client, session, user_is_general):
-    response = client.get('/users/vacations/used/', data=dict(id=user_is_general.id))
+    response = client.get('/users/vacations/used', data=dict(id=user_is_general.id))
 
     assert response.status_code == 401
 

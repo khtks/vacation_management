@@ -62,7 +62,7 @@ def registered_vacation(session):
 @pytest.yield_fixture
 @when("등록된 휴가를 삭제하는 경우")
 def delete_vacation(client):
-    response = client.delete('/users/vacations/used/')
+    response = client.delete('/users/vacations/used')
 
     assert response.status_code == 200
 
@@ -87,14 +87,14 @@ def user_is_admin(admin_user):
 
 @given("DB에 일반 사용자의 등록된 휴가가 있다")
 def general_user_vacation(client):
-    response = client.post('/users/vacations/used/')
+    response = client.post('/users/vacations/used')
     assert response.status_code == 201
     return UsedVacation.query.first().user
 
 
 @when("관리자가 일반 사용자가 등록한 휴가를 삭제할 때")
 def delete_general_user_vacation(client, session, general_user_vacation, user_is_admin):
-    uri = '/users/vacations/' + str(general_user_vacation.id) + '/used/'
+    uri = '/users/vacations/' + str(general_user_vacation.id) + '/used'
     response = client.delete(uri, data=dict(id=user_is_admin.id))
 
     assert response.status_code == 200
@@ -125,7 +125,7 @@ def user_is_general(session):
 
 @given("DB에 다른 사용자의 등록된 휴가가 있다")
 def another_user_vacation(client):
-    response = client.post('/users/vacations/used/')
+    response = client.post('/users/vacations/used')
 
     assert response.status_code == 201
     assert UsedVacation.query.all()
@@ -133,7 +133,7 @@ def another_user_vacation(client):
 
 @when("일반 사용자가 다른 사용자의 휴가를 삭제할 때")
 def general_user_delete_used_vacation(client, session, general_user, user_is_general):
-    uri = '/users/vacations/' + str(general_user.id) + '/used/'
+    uri = '/users/vacations/' + str(general_user.id) + '/used'
     response = client.delete(uri, data=dict(id=user_is_general.id))
 
     assert response.status_code == 401
