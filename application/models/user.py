@@ -3,6 +3,10 @@ import datetime
 
 
 class User(db.Model):
+    __table_name__ = 'user'
+    __table_args__ = (
+        db.UniqueConstraint('google_id', 'en_name', name="unique_user_constraint"),
+    )
     id = db.Column(db.Integer, primary_key=True)
     google_id = db.Column(db.String(30), nullable=False, unique=True)
     ko_name = db.Column(db.String(10), default="None")

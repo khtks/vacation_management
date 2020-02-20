@@ -32,7 +32,7 @@ class SpecificUser(Resource):
         target_user = User.query.get(id)
         request_user = User.query.get(data.get('id'))
 
-        if not request_user.admin and data.get('id') != str(id):
+        if not request_user.admin and data.get('id') != id:
             return Response(user_schema.dumps(request_user), 401, mimetype='application/json')
         if not target_user:
             return Response(user_schema.dumps(target_user), 400, mimetype='application/json')
@@ -60,9 +60,9 @@ class SpecificUser(Resource):
                     target_user.admin = data['admin']
 
         else: # 사용자가 일반 사용자일 경우
-            if id != int(data['id']): # 수정하려고 하는 대상이 자기 자신이 아닌 경우
+            if id != data['id']: # 수정하려고 하는 대상이 자기 자신이 아닌 경우
                 return Response(user_schema.dumps(target_user), 400, mimetype='application/json')
-            elif id == int(data['id']): # 수정하교 하는 대상이 자기 자신일 경우
+            elif id == data['id']: # 수정하교 하는 대상이 자기 자신일 경우
                 if data.get('google_id'):
                     target_user.google_id = data['google_id']
                 if data.get('en_name'):
@@ -93,4 +93,4 @@ class SpecificUser(Resource):
 
 
 api.add_resource(AllUsers, '/')
-api.add_resource(SpecificUser, '/<int:id>')
+api.add_resource(SpecificUser, '/<string:id>')

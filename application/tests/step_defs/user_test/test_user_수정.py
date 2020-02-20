@@ -139,7 +139,7 @@ def general(general_user):
 @when(parsers.parse("올바른 {uri}에 사용자가 자신의 admin을 수정하려고 할 때"))
 def modify_own_admin(client, uri, session, general_user):
     uri = uri + str(general_user.id)
-    response = client.put(uri, data=dict(id=general_user.id, google_id="modify_google", en_name="modify_name", admin=1))
+    response = client.put(uri, data=dict(id=general_user.id, google_id="modify_google", en_name="adj_name", admin=1))
 
     yield response
 

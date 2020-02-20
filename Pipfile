@@ -18,6 +18,10 @@ mysqlclient = "*"
 flask-restful = "*"
 requests = "*"
 flask-migrate = "*"
+pip = "*"
+google-api-python-client = "*"
+google-auth-httplib2 = "*"
+google-auth-oauthlib = "*"
 
 [requires]
 python_version = "3.8"
