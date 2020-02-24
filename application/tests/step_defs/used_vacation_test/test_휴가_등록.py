@@ -1,6 +1,8 @@
 from pytest_bdd import scenario, given, when, then, parsers
 from application.models.used_vacation import UsedVacation
 from application.models.user import User
+from flask import session
+from application.views.google_api import credentials_to_dict
 import pytest
 import random
 
@@ -26,8 +28,10 @@ def user(session):
 # Background
 
 @given("Google calendar가 공유되어 있다")
-def check_calendar():
-    pass
+def check_calendar(client):
+    session['credentials'] = credentials_to_dict()
+
+    assert response.status_code == 200
 
 
 # Scenario 1

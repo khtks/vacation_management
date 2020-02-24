@@ -1,10 +1,16 @@
 from __future__ import print_function
+
+import os
 import pickle
-import os.path
-from googleapiclient.discovery import build
+
+from google_auth_httplib2 import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
+
+from application.views.google_api import credentials_to_dict
+from googleapiclient.discovery import build
+import google.oauth2.credentials
 import datetime
+from flask import session, redirect
 
 
 def get_service():
@@ -20,7 +26,7 @@ def get_service():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'C:\\Users\\khtks\\PycharmProjects\\vacation_management\\application\\credentials.json', SCOPES)
+                'C:\\Users\\khtks\\PycharmProjects\\vacation_management\\application\\oauth_cred.json', SCOPES)
             creds = flow.run_local_server(port=0)
 
         with open('token.pickle', 'wb') as token:
@@ -29,12 +35,3 @@ def get_service():
     service = build('calendar', 'v3', credentials=creds)
     maxResult = 2500
     return service
-
-
-def get_events(service):
-    events = service.events().list(
-        calendarId='primary', timeMin=datetime.datetime(2020, 1, 1).isoformat() + 'Z', showDeleted=True,
-        timeMax=datetime.datetime(2020, 2, 28).isoformat() + 'Z', maxResults=2500, singleEvents=True,
-        orderBy='startTime'
-    ).execute().get('items', [])
-    return events

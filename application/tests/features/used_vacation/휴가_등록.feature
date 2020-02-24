@@ -3,7 +3,7 @@ Feature: used_vacation API
   used_vacation db에 등록한다
 
 Background:
-  Given Google calendar가 공유되어 있다
+  Given Google social login이 되어있다
 
 
 Scenario: 휴가 등록하기
