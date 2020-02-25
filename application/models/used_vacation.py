@@ -16,7 +16,7 @@ class UsedVacation(db.Model):
     event_id = db.Column(db.String(200), nullable=False)
 
     def __repr__(self):
-        return "\n< Used Vacation Google id : %r,  Summary : %r,  Start date : %r,  End date : %r,  type : %r >" % (self.user.google_id, self.summary, str(self.start_date), str(self.end_date), self.type)
+        return "\n< Used Vacation Google id : %r,   Summary : %r,  Start date : %r,   End date : %r,   type : %r >" % (self.user.google_id, self.summary, str(self.start_date), str(self.end_date), self.type)
 
     def get_period(self):
         period = self.end_date - self.start_date
