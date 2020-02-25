@@ -50,7 +50,7 @@ def test_사용자_정보_수정():
 @when(parsers.parse("올바른 {uri}에 수정할 사용자의 id와 수정할 값을 넘겨준다"))
 def modify_user_info(client, admin_user, general_user, uri, session):
     uri = uri + str(general_user.id)
-    response = client.put(uri, data=dict(id = admin_user.id, google_id="google_id", ko_name="ko_name", en_name="en_name", admin=1))
+    response = client.put(uri, data=dict(id = admin_user.id, google_id="google_id", ko_name="ko_name", en_name="en_name", admin=1, entry_date='2018-12-14'))
 
     assert response.status_code == 200
     yield user_schema.load(response.json, session=session)
@@ -78,6 +78,7 @@ def modify_own_info(client, uri, session, admin_user):
     response = client.put(uri, data=dict(id=admin_user.id, google_id="own_id", ko_name="ko_name", en_name="en_name", admin=0))
 
     assert response.status_code == 200
+    print(user_schema.load(response.json, session=session))
     yield user_schema.load(response.json, session=session)
 
 

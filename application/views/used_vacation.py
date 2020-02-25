@@ -1,22 +1,30 @@
+import json
+
 from application.schemata.used_vacation import UsedVacationSchema
 from application.models.used_vacation import UsedVacation
 from application.models.user import User
-from application import db, api, service
-from flask import Blueprint, Response, request
+from application import db, api
+from application.views.google_api import session, credentials_to_dict
+from flask import Blueprint, Response, request, redirect
 from flask_restful import Resource
 import datetime
+
+import google.oauth2.credentials
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
 
 
 used_vacation_bp = Blueprint("used_vacation", __name__, url_prefix='/users/vacations/')
 used_vacation_schema = UsedVacationSchema()
 api = api(used_vacation_bp)
 maxResult = 2500
-service = service
+
 # 'bluewhale.kr_0gbuu26gl7vue837u7f07mn360@group.calendar.google.com'  <== AIMMO Google calednar id
 
 
 class UserUsedVacation(Resource):
     def get(self, id=None):
+
         data = request.form
 
         if User.query.get(data.get('id')).admin == False and id != data.get('id'):
@@ -32,11 +40,14 @@ class UserUsedVacation(Resource):
             return Response(used_vacation_schema.dumps(used_vacation, many=True), 200, mimetype='application/json')
 
     def post(self, id=None):
-        events_result = service.events().list(
-            calendarId='primary', timeMin=datetime.datetime(2020, 1, 1).isoformat() + 'Z',
-            timeMax=datetime.datetime(2020, 2, 28).isoformat() + 'Z', maxResults=maxResult, singleEvents=True, orderBy='startTime'
-        ).execute()
-        events = events_result.get('items', [])
+        # events_result = service.events().list(
+        #     calendarId='primary', timeMin=datetime.datetime(2020, 1, 1).isoformat() + 'Z',
+        #     timeMax=datetime.datetime(2020, 2, 28).isoformat() + 'Z', maxResults=maxResult, singleEvents=True, orderBy='startTime'
+        # ).execute()
+        # events = events_result.get('items', [])
+
+        events = get_service()
+        print('events : ', events)
 
         for event in events:
             if "휴가" in event['summary'] or "연차" in event['summary'] or "반차" in event['summary']:
@@ -53,12 +64,14 @@ class UserUsedVacation(Resource):
         return Response("register used vacation", 201)
 
     def delete(self, id=None):
+        service = None
         if id is None:
-            events_result = service.events().list(
-                calendarId='primary', timeMin=datetime.datetime(2020, 1, 1).isoformat() + 'Z', showDeleted=True,
-                timeMax=datetime.datetime(2020, 2, 28).isoformat() + 'Z', maxResults=maxResult, singleEvents=True, orderBy='startTime'
-            ).execute()
-            events = events_result.get('items', [])
+            # events_result = service.events().list(
+            #     calendarId='primary', timeMin=datetime.datetime(2020, 1, 1).isoformat() + 'Z', showDeleted=True,
+            #     timeMax=datetime.datetime(2020, 2, 28).isoformat() + 'Z', maxResults=maxResult, singleEvents=True, orderBy='startTime'
+            # ).execute()
+            # events = events_result.get('items', [])
+            events = session['events']
 
             for event in events:
                 if event['status'] == 'cancelled' and UsedVacation.query.filter_by(event_id=event['id']).first():
@@ -97,3 +110,26 @@ def Attribute(event):
     event_id = event['id']
 
     return user, summary, start, end, type, event_id
+
+
+def get_service():
+    SCOPES = ['https://www.googleapis.com/auth/calendar']
+    print(session)
+    if 'credentials' not in session:
+        print("no credentials")
+        return redirect('/authorize')
+    credentials = google.oauth2.credentials.Credentials(
+        **session['credentials'])
+
+    service = build('calendar', 'v3', credentials=credentials)
+
+    events = service.events().list(
+        calendarId='primary', timeMin=datetime.datetime(2020, 1, 1).isoformat() + 'Z', showDeleted=True,
+        timeMax=datetime.datetime(2020, 2, 28).isoformat() + 'Z', maxResults=2500, singleEvents=True,
+        orderBy='startTime'
+    ).execute().get('items', [])
+
+    session['credentials'] = credentials_to_dict(credentials)
+    session['events'] = events
+
+    return events

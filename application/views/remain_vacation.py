@@ -2,7 +2,7 @@ from application.schemata.remain_vacation import RemainVacationSchema
 from application.models.remain_vacation import RemainVacation
 from application.models.used_vacation import UsedVacation
 from application.models.user import User
-from application import db, api, service
+from application import db, api
 from flask import Blueprint, Response, request
 from flask_restful import Resource
 import datetime
