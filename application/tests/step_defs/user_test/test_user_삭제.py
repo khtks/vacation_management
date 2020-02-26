@@ -26,7 +26,7 @@ def general_user(session):
 @pytest.fixture
 def admin_user(session):
     try:
-        admin_user = User.query.filrter_by(admin=True).first()
+        admin_user = User.query.filter_by(admin=True).first()
         assert admin_user
 
     except BaseException:
