@@ -36,7 +36,7 @@ class SpecificUser(Resource):
             return Response(user_schema.dumps(request_user), 401, mimetype='application/json')
         if not target_user:
             return Response(user_schema.dumps(target_user), 400, mimetype='application/json')
-        # test test
+
         return Response(user_schema.dumps(target_user), 200, mimetype='application/json')
 
     def put(self, id):
