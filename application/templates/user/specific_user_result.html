@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <title>결과</title>
+</head>
+<body>
+    <p>
+        &nbsp;&nbsp;<b>{{title}}</b><br><br>
+        &nbsp;&nbsp;결과 : {{result}}<br><br><br><br>
+
+        {% if request_user.admin == True %}
+        <input type="button" value="admin test"/>
+        {% else %}
+        <input type="button" value="general test"/>
+        {% endif %}
+    </p>
+</body>
+</html>
