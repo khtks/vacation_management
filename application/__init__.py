@@ -52,12 +52,12 @@ def create_app(mode='dev'):
         google_id = session['google_id']
         user = User.query.filter_by(google_id=google_id).first()
         if not user:
-            return render_template('user/user_register.html', g_id=google_id, google_id=google_id)
+            return render_template('specific_user/user_register.html', g_id=google_id, google_id=google_id)
         elif user.admin:
             target_id = "temp" if not request.args.get('사용자 번호') else str(request.args.get('사용자 번호'))
-            return render_template('admin_user_main.html', id=str(user.id))
+            return render_template('main_page/admin_user_main.html', id=str(user.id))
         elif not user.admin:
-            return render_template('general_user_main.html', id=str(user.id))
+            return render_template('main_page/general_user_main.html', id=str(user.id))
 
     return app
 

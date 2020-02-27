@@ -30,11 +30,16 @@ class UserVacation(Resource):
         elif request_user.admin:
             if id is None:
                 remain_vacation = RemainVacation.query.all()
-                return make_response(render_template('user/specific_user_result.html', title="남은 휴가", result=remain_vacation, request_user=request_user, id=str(request_user.id)), 200, headers)
+                return make_response(render_template('user/multiple_user_result.html', title="남은 휴가", result=remain_vacation, user=request_user, id=str(request_user.id)), 200, headers)
             else:
                 target_user = User.query.get(id)
                 remain_vacation = RemainVacation.query.filter_by(user=target_user).one_or_none()
-                return make_response(render_template('user/specific_user_result.html', title="남은 휴가", result=remain_vacation, request_user=request_user, id=str(request_user.id)), 200, headers)
+                if id != data.get('id'):
+                    target_id = data.get('사용자 번호')
+                    result = [remain_vacation]
+                    return make_response(render_template('user/select_specific_user.html', title='사용자 정보', result=result, target_id=str(target_id), id=str(request_user.id)), 200, headers)
+                else:
+                    return make_response(render_template('user/specific_user_result.html', title="남은 휴가", result=remain_vacation, request_user=request_user, id=str(request_user.id)), 200, headers)
 
     def post(self, id=None):
         if id:
@@ -97,6 +102,7 @@ def calculate_vacation(user):
         elif flag == 0.0:
             total = vacation
 
-    remain = total - len(UsedVacation.query.filter_by(user=user).all())
+    remain = total - len(UsedVacation.query.filter_by(user=user, type="연차").all())
+    remain = remain - (0.5 * len(UsedVacation.query.filter_by(user=user, type="반차").all()))
 
     return years, total, remain

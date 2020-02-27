@@ -12,6 +12,7 @@ google_api_bp = Blueprint("google_api", __name__)
 SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
 
 
+@google_api_bp.route('/service')
 def get_event():
     if 'credentials' not in session:
         return redirect('/authorize')
@@ -85,26 +86,6 @@ def oauth2callback():
     return redirect(url_for('google_api.user_auth'))
 
 
-@google_api_bp.route('/revoke')
-def revoke():
-    if 'credentials' not in session:
-        return ('You need to <a href="/authorize">authorize</a> before ' +
-                'testing the code to revoke credentials.')
-
-    credentials = google.oauth2.credentials.Credentials(
-        **session['credentials'])
-
-    revoke = requests.post('https://oauth2.googleapis.com/revoke',
-                           params={'token': credentials.token},
-                           headers={'content-type': 'application/x-www-form-urlencoded'})
-
-    status_code = getattr(revoke, 'status_code')
-    if status_code == 200:
-        return 'Credentials successfully revoked.' + print_index_table()
-    else:
-        return 'An error occurred.' + print_index_table()
-
-
 @google_api_bp.route('/clear')
 def clear_credentials():
     if 'credentials' in session:
@@ -149,11 +130,6 @@ def print_index_table():
             '<td>Go directly to the authorization flow. If there are stored ' +
             '    credentials, you still might not be prompted to reauthorize ' +
             '    the application.</td></tr>' +
-            '<tr><td><a href="/revoke">Revoke current credentials</a></td>' +
-            '<td>Revoke the access token associated with the current user ' +
-            '    session. After revoking credentials, if you go to the test ' +
-            '    page, you should see an <code>invalid_grant</code> error.' +
-            '</td></tr>' +
             '<tr><td><a href="/clear">Clear Flask session credentials</a></td>' +
             '<td>Clear the access token currently stored in the user session. ' +
             '    After clearing the token, if you <a href="/test">test the ' +

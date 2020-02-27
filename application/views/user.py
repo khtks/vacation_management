@@ -19,7 +19,7 @@ class AllUsers(Resource):
         if not user.admin:
             return Response("No Authority", 401, mimetype='application/json')
         result = User.query.all()
-        return make_response(render_template('user/multiple_user_result.html', title="전체 사용자 정보", result=result, id=str(user.id)), 200, headers)
+        return make_response(render_template('user/multiple_user_result.html', title="전체 사용자 정보", result=result, id=str(user.id), user=user), 200, headers)
         # return Response(user_schema.dumps(result, many=True), 200, mimetype='application/json')
 
     def post(self):
@@ -52,7 +52,13 @@ class SpecificUser(Resource):
         if not target_user:
             return Response(user_schema.dumps(target_user), 400, mimetype='application/json')
 
-        return make_response(render_template('user/specific_user_result.html', title='사용자 정보', result=target_user, request_user=request_user, id=str(request_user.id)), 200, headers)
+        if id == data.get('id'):
+            return make_response(render_template('user/specific_user_result.html', title='사용자 정보', result=target_user, request_user=request_user, id=str(request_user.id)), 200, headers)
+        else:
+            target_id = data.get('사용자 번호')
+            print(target_id)
+            result = [target_user]
+            return make_response(render_template('user/select_specific_user.html', title='사용자 정보', result=result, target_id=str(target_id), id=str(request_user.id)), 200, headers)
 
     def put(self, id):
         data = request.form

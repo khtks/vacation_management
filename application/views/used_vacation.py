@@ -24,12 +24,16 @@ class UserUsedVacation(Resource):
 
         if id is None:
             used_vacation = UsedVacation.query.all()
-            return make_response(render_template('user/multiple_user_result.html', title="사용한 전체 휴가", result=used_vacation, id=str(request_user.id)), 201, headers)
+            return make_response(render_template('user/multiple_user_result.html', title="사용한 전체 휴가", result=used_vacation, id=str(request_user.id), user=request_user), 201, headers)
 
         if id is not None:
             target_user = User.query.get(id)
             used_vacation = UsedVacation.query.filter_by(user=target_user).all()
-            return make_response(render_template('user/multiple_user_result.html', title="사용한 휴가", result=used_vacation, id=str(target_user.id)), 201, headers)
+            if id != data.get('id'):
+                target_id = data.get('사용자 번호')
+                return make_response(render_template('user/select_specific_user.html', title='사용자 정보', result=used_vacation, target_id=str(target_id), id=str(request_user.id)), 200, headers)
+            else:
+                return make_response(render_template('user/multiple_user_result.html', title="사용한 휴가", result=used_vacation, id=str(target_user.id), user=request_user), 201, headers)
 
     def post(self, id=None):
         if 'events' not in session:
