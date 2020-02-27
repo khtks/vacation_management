@@ -29,6 +29,8 @@ class AllUsers(Resource):
             data['entry_date'] = datetime.datetime.strptime(data.get('entry_date'), "%Y-%m-%d").isoformat()
         else :
             data['entry_date'] = datetime.datetime.today().isoformat()
+        if not User.query.first():
+            data['admin'] = True
 
         user = user_schema.load(data)
         db.session.add(user)
@@ -56,7 +58,6 @@ class SpecificUser(Resource):
             return make_response(render_template('user/specific_user_result.html', title='사용자 정보', result=target_user, request_user=request_user, id=str(request_user.id)), 200, headers)
         else:
             target_id = data.get('사용자 번호')
-            print(target_id)
             result = [target_user]
             return make_response(render_template('user/select_specific_user.html', title='사용자 정보', result=result, target_id=str(target_id), id=str(request_user.id)), 200, headers)
 
