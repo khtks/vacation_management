@@ -3,7 +3,7 @@ from application.models.used_vacation import UsedVacation
 from application.models.user import User
 from application import db, api
 from application.views.google_api import session, get_event
-from flask import Blueprint, Response, request, redirect, url_for, make_response, render_template
+from flask import Blueprint, Response, request, redirect, url_for, make_response, render_template, current_app
 from flask_restful import Resource
 
 
@@ -17,18 +17,19 @@ headers = {'Content-Type': 'text/html'}
 class UserUsedVacation(Resource):
     def get(self, id=None):
         data = request.args
+        request_user = User.query.get(data.get('id'))
 
-        if User.query.get(data.get('id')).admin == False and id != data.get('id'):
+        if request_user.admin == False and id != data.get('id'):
             return Response("No Authority", 401)
 
         if id is None:
             used_vacation = UsedVacation.query.all()
-            return Response(used_vacation_schema.dumps(used_vacation, many=True), 200, mimetype='application/json')
+            return make_response(render_template('user/multiple_user_result.html', title="사용한 전체 휴가", result=used_vacation, id=str(request_user.id)), 201, headers)
 
         if id is not None:
-            user = User.query.get(id)
-            used_vacation = UsedVacation.query.filter_by(user=user).all()
-            return make_response(render_template('used_vacation/vacations_result.html', title="사용한 휴가", result=used_vacation, id=str(user.id)), 201, headers)
+            target_user = User.query.get(id)
+            used_vacation = UsedVacation.query.filter_by(user=target_user).all()
+            return make_response(render_template('user/multiple_user_result.html', title="사용한 휴가", result=used_vacation, id=str(target_user.id)), 201, headers)
 
     def post(self, id=None):
         if 'events' not in session:
@@ -38,16 +39,19 @@ class UserUsedVacation(Resource):
 
         user = User.query.get(request.form.get('id'))
         result_event = []
+        user_id = []
 
         for event in events:
             if "휴가" in event['summary'] or "연차" in event['summary'] or "반차" in event['summary']:
                 if UsedVacation.query.filter_by(event_id=event['id']).one_or_none():
                     continue
-                else:
+                else :
                     user, summary, start, end, type, event_id = Attribute(event)
                     used_vacation = UsedVacation(user=user, summary=summary, start_date=start, end_date=end, type=type, event_id=event_id)
 
                 if used_vacation is not None:
+                    if used_vacation.user.id not in user_id:
+                        user_id.append(used_vacation.user.id)
                     result_event.append(used_vacation)
                     db.session.add(used_vacation)
                     db.session.commit()
@@ -55,7 +59,11 @@ class UserUsedVacation(Resource):
         if not result_event:
             result_event.append("None")
 
-        return make_response(render_template('used_vacation/vacations_result.html', title="등록된 휴가", result=result_event, id=str(user.id)), 201, headers)
+        with current_app.test_client() as client:
+            for id in user_id:
+                client.put(url_for('remain_vacation.user_vacation'), data=dict(id=id))
+
+        return make_response(render_template('user/multiple_user_result.html', title="등록된 휴가", result=result_event, id=str(user.id), user=user), 201, headers)
 
     def delete(self, id=None):
         if id is None:
@@ -82,7 +90,7 @@ class UserUsedVacation(Resource):
             return Response("Delete specific user vacation", 200)
 
 
-api.add_resource(UserUsedVacation, '/used', '/<string:id>/used')
+api.add_resource(UserUsedVacation, '/used', '/<string:id>/used', endpoint='used')
 
 
 def Attribute(event):

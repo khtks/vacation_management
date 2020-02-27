@@ -27,6 +27,8 @@ class AllUsers(Resource):
 
         if data.get('entry_date'):
             data['entry_date'] = datetime.datetime.strptime(data.get('entry_date'), "%Y-%m-%d").isoformat()
+        else :
+            data['entry_date'] = datetime.datetime.today().isoformat()
 
         user = user_schema.load(data)
         db.session.add(user)
@@ -105,6 +107,12 @@ class SpecificUser(Resource):
         db.session.commit()
         return Response(user_schema.dumps(request_user), 200, mimetype='application/json')
 
+    def post(self, id=None):
+        data = request.form
+        user = User.query.all()
+        target_id = "temp" if not data.get('사용자 번호') else data.get('사용자 번호')
+
+        return make_response(render_template('user/select_specific_user.html', title="회원 선택", result=user, id=str(data.get('id')), target_id=target_id), 200, headers)
 
 api.add_resource(AllUsers, '/')
 api.add_resource(SpecificUser, '/<string:id>')

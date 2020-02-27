@@ -3,7 +3,7 @@ from application.models.remain_vacation import RemainVacation
 from application.models.used_vacation import UsedVacation
 from application.models.user import User
 from application import db, api
-from flask import Blueprint, Response, request, render_template, make_response
+from flask import Blueprint, Response, request, render_template, make_response, current_app
 from flask_restful import Resource
 import datetime
 import calendar
@@ -30,11 +30,11 @@ class UserVacation(Resource):
         elif request_user.admin:
             if id is None:
                 remain_vacation = RemainVacation.query.all()
-                return Response(remain_vacation_schema.dumps(remain_vacation, many=True), 200, mimetype='application/json')
+                return make_response(render_template('user/specific_user_result.html', title="남은 휴가", result=remain_vacation, request_user=request_user, id=str(request_user.id)), 200, headers)
             else:
                 target_user = User.query.get(id)
                 remain_vacation = RemainVacation.query.filter_by(user=target_user).one_or_none()
-                return Response(remain_vacation_schema.dumps(remain_vacation), 200, mimetype='application/json')
+                return make_response(render_template('user/specific_user_result.html', title="남은 휴가", result=remain_vacation, request_user=request_user, id=str(request_user.id)), 200, headers)
 
     def post(self, id=None):
         if id:
@@ -50,9 +50,12 @@ class UserVacation(Resource):
 
         return Response(remain_vacation_schema.dumps(remain_vacation), 201, mimetype='application/json')
 
-    def put(self, id):
-        print("remain vacation post")
-        user = User.query.get(id)
+    def put(self, id=None):
+        if id:
+            user = User.query.get(id)
+        else:
+            user = User.query.get(request.form.get('id'))
+
         remain_vacation = RemainVacation.query.filter_by(user=user).one()
 
         year, total, remain = calculate_vacation(user)
@@ -62,8 +65,6 @@ class UserVacation(Resource):
         remain_vacation.remain_vacation = remain
 
         db.session.commit()
-
-        return Response(remain_vacation_schema.dumps(remain_vacation), 200, mimetype='application/json')
 
     def delete(self, id):
         user = User.query.get(id)

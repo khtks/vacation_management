@@ -11,7 +11,7 @@ class RemainVacation(db.Model):
     remain_vacation = db.Column(db.Float, nullable=False)
 
     def __repr__(self):
-        return "Google id : %r  /  이름 : %r  /  연차 : %r  /  총 휴가 : %r  /  남은 휴가 : %r" % (self.user.google_id,  self.user.en_name, self.number_of_years, self.total_vacation, self.remain_vacation)
+        return "Google id : %r  /  이름 : %r  /  연차 : %r년차  /  총 휴가 : %r일  /  남은 휴가 : %r일" % (self.user.google_id,  self.user.en_name, self.number_of_years + 1, self.total_vacation, self.remain_vacation)
 
     def get_id(self):
         return self.id
