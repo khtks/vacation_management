@@ -1,7 +1,8 @@
+import requests
 from application import db, api
 from application.models.user import User
 from application.schemata.user import UserSchema
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, make_response, render_template, url_for, current_app
 from flask_restful import Resource
 import datetime
 
@@ -9,26 +10,38 @@ user_bp = Blueprint("users", __name__, url_prefix='/users')
 user_schema = UserSchema()
 session = db.session
 api = api(user_bp)
+headers = {'Content-Type': 'text/html'}
 
 
 class AllUsers(Resource):
     def get(self):
-        user = User.query.get(request.form.get('id'))
+        user = User.query.get(request.args.get('id'))
         if not user.admin:
             return Response("No Authority", 401, mimetype='application/json')
         result = User.query.all()
-        return Response(user_schema.dumps(result, many=True), 200, mimetype='application/json')
+        return make_response(render_template('user/multiple_user_result.html', title="전체 사용자 정보", result=result, id=str(user.id)), 200, headers)
+        # return Response(user_schema.dumps(result, many=True), 200, mimetype='application/json')
 
     def post(self):
-        user = user_schema.load(request.form)
+        data = request.form.to_dict()
+
+        if data.get('entry_date'):
+            data['entry_date'] = datetime.datetime.strptime(data.get('entry_date'), "%Y-%m-%d").isoformat()
+
+        user = user_schema.load(data)
         db.session.add(user)
         db.session.commit()
-        return Response(user_schema.dumps(user), 201, mimetype='application/json')
+
+        with current_app.test_client() as client:
+            client.post(url_for('remain_vacation.user_vacation'), data=dict(id=user.id))
+
+        return make_response(render_template('user/specific_user_result.html', title="생성된 사용자", result=user, request_user=user, id=str(user.id)), 201, headers)
 
 
 class SpecificUser(Resource):
     def get(self, id):
-        data = request.form
+        data = request.args
+
         target_user = User.query.get(id)
         request_user = User.query.get(data.get('id'))
 
@@ -37,7 +50,7 @@ class SpecificUser(Resource):
         if not target_user:
             return Response(user_schema.dumps(target_user), 400, mimetype='application/json')
 
-        return Response(user_schema.dumps(target_user), 200, mimetype='application/json')
+        return make_response(render_template('user/specific_user_result.html', title='사용자 정보', result=target_user, request_user=request_user, id=str(request_user.id)), 200, headers)
 
     def put(self, id):
         data = request.form
@@ -78,6 +91,7 @@ class SpecificUser(Resource):
         return Response(user_schema.dumps(target_user), 200, mimetype='application/json')
 
     def delete(self, id):
+
         request_user = User.query.get(request.form['id'])
 
         if not request_user.admin:

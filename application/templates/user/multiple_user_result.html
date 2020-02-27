@@ -2,12 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>결과</title>
 </head>
 <body>
-    &nbsp;&nbsp;<b>{{title}}</b>
+    <br><br>
+    &nbsp;&nbsp;<strong><span style="font-size: x-large; ">{{title}}</span></strong><br><br><br>
     {% for x in result %}
-    <div id="name">{{ x }}</div>
+    <div id="name">&nbsp;&nbsp;{{ x }}</div><br>
     {% endfor %}
+    <br><br><br>
+
+    {% set url = "/users/" + id %}
+    {% set used_url = "/users/vacations/" + id + "/used" %}
+    {% set remain_url = "/users/vacations/" + id + "/remain" %}
+
+    <form>
+        <input type="hidden" name="id" value={{id}}>
+        &nbsp;&nbsp;<input type="submit" formaction={{url}} formmethod="get" value="사용자 정보 확인">&nbsp;&nbsp;
+        &nbsp;&nbsp;<input type="submit" formaction="/users/vacations/used" formmethod="post" value="사용한 휴가 등록">&nbsp;&nbsp;
+        &nbsp;&nbsp;<input type="submit" formaction={{used_url}} formmethod="get" value="사용한 휴가 확인">&nbsp;&nbsp;
+        &nbsp;&nbsp;<input type="submit" formaction={{remain_url}} formmethod="get" value="남은 휴가 확인">&nbsp;&nbsp;
+        &nbsp;&nbsp;<input type="button" value="메인 페이지" onclick="location.href='http://127.0.0.1:8080/'"/>
+    </form>
+
 </body>
 </html>

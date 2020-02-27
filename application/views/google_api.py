@@ -21,8 +21,9 @@ def get_event():
 
     service = build('calendar', 'v3', credentials=credentials)
 
+    # 'bluewhale.kr_0gbuu26gl7vue837u7f07mn360@group.calendar.google.com'  <== AIMMO Google calednar id
     events_result = service.events().list(
-        calendarId='primary', timeMin=datetime.datetime(2020, 1, 1).isoformat() + 'Z',
+        calendarId='primary', timeMin=datetime.datetime(2020, 1, 1).isoformat() + 'Z', showDeleted=True,
         timeMax=datetime.datetime(2020, 2, 28).isoformat() + 'Z', maxResults=2500, singleEvents=True,
         orderBy='startTime'
     ).execute()

@@ -8,7 +8,8 @@
     "client_secret": "f-FgdVVi_bnESelGmZbBaP0M",
     "redirect_uris": [
       "https://127.0.0.1:8080/oauth2callback",
-      "https://vacation-management-268812.appspot.com/oauth2callback"
+      "https://vacation-management-268812.appspot.com/oauth2callback",
+      "http://127.0.0.1:8080/oauth2callback"
     ]
   }
 }

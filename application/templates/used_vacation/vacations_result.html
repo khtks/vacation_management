@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>등록된 휴가</title>
+</head>
+<body>
+    <div>
+        &nbsp;&nbsp;&nbsp;&nbsp;<b>{{title}}</b><br><br>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;< 결과 >
+        {% for x in result %}
+        <div id='uv'> &nbsp;&nbsp;&nbsp;&nbsp;{{x}}<br> </div>
+        {% endfor %}
+        <br><br>
+    </div>
+
+    {% if title == "등록된 휴가" %}
+    <form>
+        {% set url = "/users/vacations/" + id + "/used" %}
+        <input type="hidden" name="id" value={{id}}>
+        &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="메인 페이지" onclick="location.href='/main'">
+        &nbsp;&nbsp;<input type="submit" value="사용한 휴가 검색" formaction={{url}} formmethod="get">
+    </form>
+    {% else %}
+    &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" value="메인 페이지" onclick="location.href='/main'">
+    {% endif %}
+</body>
+</html>

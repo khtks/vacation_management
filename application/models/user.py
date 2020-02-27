@@ -15,7 +15,7 @@ class User(db.Model):
     admin = db.Column(db.Integer, default=False)
 
     def __repr__(self):
-        return "Google ID : %r,  한글이름 : %r,  영어이름 : %r,  입사일 : %r,  관리자 여부 : %r" %(self.google_id, self.ko_name, self.en_name, self.entry_date, bool(self.admin))
+        return "Google ID : %r  /  한글이름 : %r  /  영어이름 : %r  /  입사일 : %r  /  관리자 여부 : %r" %(self.google_id, self.ko_name, self.en_name, str(self.entry_date)[:10], bool(self.admin))
 
     def get_id(self):
         return self.id

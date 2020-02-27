@@ -54,10 +54,9 @@ def create_app(mode='dev'):
         if not user:
             return render_template('user/user_register.html', g_id=google_id, google_id=google_id)
         elif user.admin:
-            return render_template('admin_user_main.html')
+            return render_template('admin_user_main.html', id=str(user.id))
         elif not user.admin:
             return render_template('general_user_main.html', id=str(user.id))
-
 
     return app
 

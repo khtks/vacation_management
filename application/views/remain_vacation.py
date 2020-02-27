@@ -3,7 +3,7 @@ from application.models.remain_vacation import RemainVacation
 from application.models.used_vacation import UsedVacation
 from application.models.user import User
 from application import db, api
-from flask import Blueprint, Response, request
+from flask import Blueprint, Response, request, render_template, make_response
 from flask_restful import Resource
 import datetime
 import calendar
@@ -11,11 +11,12 @@ import calendar
 remain_vacation_bp = Blueprint("remain_vacation", __name__, url_prefix='/users/vacations/')
 remain_vacation_schema = RemainVacationSchema()
 api = api(remain_vacation_bp)
+headers = {'Content-Type': 'text/html'}
 
 
 class UserVacation(Resource):
     def get(self, id=None):
-        data = request.form
+        data = request.args
         request_user = User.query.filter_by(id=data.get('id')).one_or_none()
 
         if not request_user.admin:
@@ -24,7 +25,7 @@ class UserVacation(Resource):
 
             target_user = User.query.get(id)
             remain_vacation = RemainVacation.query.filter_by(user=target_user).one_or_none()
-            return Response(remain_vacation_schema.dumps(remain_vacation), 200, mimetype='application/json')
+            return make_response(render_template('user/specific_user_result.html', title="남은 휴가", result=remain_vacation, request_user=request_user, id=str(request_user.id)), 200, headers)
 
         elif request_user.admin:
             if id is None:
@@ -35,8 +36,12 @@ class UserVacation(Resource):
                 remain_vacation = RemainVacation.query.filter_by(user=target_user).one_or_none()
                 return Response(remain_vacation_schema.dumps(remain_vacation), 200, mimetype='application/json')
 
-    def post(self, id):
-        user = User.query.get(id)
+    def post(self, id=None):
+        if id:
+            user = User.query.get(id)
+        else:
+            user = User.query.get(request.form.get('id'))
+
         years, total, remain = calculate_vacation(user)
 
         remain_vacation = RemainVacation(user=user, number_of_years=years, total_vacation=total, remain_vacation=remain)
@@ -46,6 +51,7 @@ class UserVacation(Resource):
         return Response(remain_vacation_schema.dumps(remain_vacation), 201, mimetype='application/json')
 
     def put(self, id):
+        print("remain vacation post")
         user = User.query.get(id)
         remain_vacation = RemainVacation.query.filter_by(user=user).one()
 
@@ -68,7 +74,7 @@ class UserVacation(Resource):
         return Response(remain_vacation_schema.dumps(remain_vacation), 200, mimetype='application/json')
 
 
-api.add_resource(UserVacation, '/remain', '/<string:id>/remain')
+api.add_resource(UserVacation, '/remain', '/<string:id>/remain', endpoint='user_vacation')
 
 
 def calculate_vacation(user):
@@ -79,7 +85,7 @@ def calculate_vacation(user):
         total = 15 + (years // 2)
     else:
         working_day = (datetime.datetime(user.entry_date.year, 12, 31) - user.entry_date).days
-        vacation = 15 * (working_day / 365) if not calendar.isleap(user.entry_date.year) else 15 * (working_day+1 / 366)
+        vacation = (15 * (working_day / 365)) if not calendar.isleap(user.entry_date.year) else (15 * ((working_day+1) / 366))
         flag = vacation - int(vacation)
         total = 0
 
