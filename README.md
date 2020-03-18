@@ -5,26 +5,26 @@
   사용자의 남은 휴가나 사용한 휴가를 확인할 수 있는 프로그램을 만드는 것
 
 2)	사용한 프레임워크와 라이브러리
-  1.	Flask
-      - python의 웹 프레임워크
-  2.	Flask-sqlalchemy 
-     - flask에서 ORM을 이용하기 위한 라이브러리
-  3.	Mysql, Mysqlclient 
-      - python에서 mysql과 연동하여 db를 사용하기 위한 라이브러리
-  4.	Flask-marshmallow, Marshmallow-sqlalchemy 
-      - flask와 sqlalchemy에서 serialize와 deserialize를 사용하기 위한 라이브러리 / marshmallow-sqlalchemy를 이용하면 sqlalchemy model을 
-        이용해 schema를 만들 수 있다
-  5.	Flask-migrate 
-      - flask에서 migration을 사용하기 위한 라이브러리
-  6.	Flask-restful 
-      - flask에서 restful api를 좀 더 손쉽게 만들기 위한 라이브러리
-  7.	Pytest, Pytest-bdd 
-      - python에서 테스트를 진행할 수 있도록 도와주는 라이브러리 / pytest-bdd는 pycharm에서 공식적으로 지원해
-        주기 때문에, 좀 더 손쉽게 시나리오를 만들어 bdd를 진행할 수 있다.
-  8.	Google, Google-outh 등 
-      - google oauth와 google api를 이용하기 위한 라이브러리
-  9.	Pyopenssl
-      - python에서 ssl을 이용하기 위한 라이브러리
+    1.	Flask
+        - python의 웹 프레임워크
+    2.	Flask-sqlalchemy 
+       - flask에서 ORM을 이용하기 위한 라이브러리
+    3.	Mysql, Mysqlclient 
+        - python에서 mysql과 연동하여 db를 사용하기 위한 라이브러리
+    4.	Flask-marshmallow, Marshmallow-sqlalchemy 
+        - flask와 sqlalchemy에서 serialize와 deserialize를 사용하기 위한 라이브러리 / marshmallow-sqlalchemy를 이용하면 sqlalchemy model을 
+          이용해 schema를 만들 수 있다
+    5.	Flask-migrate 
+        - flask에서 migration을 사용하기 위한 라이브러리
+    6.	Flask-restful 
+        - flask에서 restful api를 좀 더 손쉽게 만들기 위한 라이브러리
+    7.	Pytest, Pytest-bdd 
+        - python에서 테스트를 진행할 수 있도록 도와주는 라이브러리 / pytest-bdd는 pycharm에서 공식적으로 지원해
+          주기 때문에, 좀 더 손쉽게 시나리오를 만들어 bdd를 진행할 수 있다.
+    8.	Google, Google-outh 등 
+        - google oauth와 google api를 이용하기 위한 라이브러리
+    9.	Pyopenssl
+        - python에서 ssl을 이용하기 위한 라이브러리
 
 3)	초기 스팩
     1.	공통(일반 사용자, 관리자)
