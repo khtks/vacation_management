@@ -4,16 +4,31 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pytest-bdd = "*"
+pytest = "*"
 
 [packages]
 flask = "*"
 flask-sqlalchemy = "*"
 flask-marshmallow = "*"
-flask-migrate = "*"
 marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 mysql = "*"
+flask-restful = "*"
+requests = "*"
+flask-migrate = "*"
+pip = "*"
+pytest = "*"
 mysqlclient = "*"
+google-api-python-client = "*"
+google-auth-httplib2 = "*"
+google-auth-oauthlib = "*"
+pytest-bdd = "*"
+google-auth = "*"
+google = "*"
+oauth2client = "*"
+pyopenssl = "*"
+arrow = "*"
 
 [requires]
 python_version = "3.8"
