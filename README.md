@@ -8,7 +8,7 @@
     1.	Flask
         - python의 웹 프레임워크
     2.	Flask-sqlalchemy 
-       - flask에서 ORM을 이용하기 위한 라이브러리
+        - flask에서 ORM을 이용하기 위한 라이브러리
     3.	Mysql, Mysqlclient 
         - python에서 mysql과 연동하여 db를 사용하기 위한 라이브러리
     4.	Flask-marshmallow, Marshmallow-sqlalchemy 
