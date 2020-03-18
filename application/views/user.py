@@ -1,7 +1,8 @@
+from application.service import RegisterUser
 from application import db, api
 from application.models.user import User
 from application.schemata.user import UserSchema
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, make_response, render_template, url_for, current_app
 from flask_restful import Resource
 import datetime
 
@@ -9,26 +10,30 @@ user_bp = Blueprint("users", __name__, url_prefix='/users')
 user_schema = UserSchema()
 session = db.session
 api = api(user_bp)
+headers = {'Content-Type': 'text/html'}
+register = RegisterUser()
 
 
 class AllUsers(Resource):
     def get(self):
-        user = User.query.get(request.form.get('id'))
+        user = User.query.get(request.args.get('id'))
         if not user.admin:
             return Response("No Authority", 401, mimetype='application/json')
         result = User.query.all()
-        return Response(user_schema.dumps(result, many=True), 200, mimetype='application/json')
+        return make_response(render_template('user/multiple_user_result.html', title="전체 사용자 정보", result=result, id=str(user.id), user=user), 200, headers)
+        # return Response(user_schema.dumps(result, many=True), 200, mimetype='application/json')
 
     def post(self):
-        user = user_schema.load(request.form)
-        db.session.add(user)
-        db.session.commit()
-        return Response(user_schema.dumps(user), 201, mimetype='application/json')
+        data = request.form.to_dict()
+        user = register.run(data)
+
+        return make_response(render_template('user/specific_user_result.html', title="생성된 사용자", result=user, request_user=user, id=str(user.id)), 201, headers)
 
 
 class SpecificUser(Resource):
     def get(self, id):
-        data = request.form
+        data = request.args
+
         target_user = User.query.get(id)
         request_user = User.query.get(data.get('id'))
 
@@ -37,7 +42,12 @@ class SpecificUser(Resource):
         if not target_user:
             return Response(user_schema.dumps(target_user), 400, mimetype='application/json')
 
-        return Response(user_schema.dumps(target_user), 200, mimetype='application/json')
+        if id == data.get('id'):
+            return make_response(render_template('user/specific_user_result.html', title='사용자 정보', result=target_user, request_user=request_user, id=str(request_user.id)), 200, headers)
+        else:
+            target_id = data.get('사용자 번호')
+            result = [target_user]
+            return make_response(render_template('user/select_specific_user.html', title='사용자 정보', result=result, target_id=str(target_id), id=str(request_user.id)), 200, headers)
 
     def put(self, id):
         data = request.form
@@ -78,6 +88,7 @@ class SpecificUser(Resource):
         return Response(user_schema.dumps(target_user), 200, mimetype='application/json')
 
     def delete(self, id):
+
         request_user = User.query.get(request.form['id'])
 
         if not request_user.admin:
@@ -91,6 +102,12 @@ class SpecificUser(Resource):
         db.session.commit()
         return Response(user_schema.dumps(request_user), 200, mimetype='application/json')
 
+    def post(self, id=None):
+        data = request.form
+        user = User.query.all()
+        target_id = "temp" if not data.get('사용자 번호') else data.get('사용자 번호')
+
+        return make_response(render_template('user/select_specific_user.html', title="회원 선택", result=user, id=str(data.get('id')), target_id=target_id), 200, headers)
 
 api.add_resource(AllUsers, '/')
 api.add_resource(SpecificUser, '/<string:id>')

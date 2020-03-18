@@ -1,10 +1,11 @@
-from flask import Flask, redirect, url_for, session, render_template
+from flask import Flask, redirect, url_for, session, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow, pprint
 from flask_migrate import Migrate
 from flask_restful import Api
 from application.views.google_api import print_index_table
 import os
+
 
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -49,15 +50,16 @@ def create_app(mode='dev'):
             return redirect(url_for('google_api.authorize'))
 
         google_id = session['google_id']
-        print(google_id)
         user = User.query.filter_by(google_id=google_id).first()
         if not user:
             return render_template('user/user_register.html', g_id=google_id, google_id=google_id)
         elif user.admin:
-            return render_template('admin_user_main.html')
+            target_id = "temp" if not request.args.get('사용자 번호') else str(request.args.get('사용자 번호'))
+            return render_template('main_page/admin_user_main.html', id=str(user.id))
         elif not user.admin:
-            return render_template('general_user_main.html', id=str(user.id))
-
+            return render_template('main_page/general_user_main.html', id=str(user.id))
 
     return app
+
+
 
