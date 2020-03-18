@@ -1,39 +1,11 @@
-import datetime
-
-import pytest
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from flask import Blueprint, redirect, url_for, request, session, render_template
-import google.oauth2.credentials
 import google_auth_oauthlib.flow
-from googleapiclient.discovery import build
+
 
 google_api_bp = Blueprint("google_api", __name__)
 SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
-
-
-@google_api_bp.route('/service')
-def get_event():
-    if 'credentials' not in session:
-        return redirect('/authorize')
-
-    credentials = google.oauth2.credentials.Credentials(
-        **session['credentials'])
-
-    service = build('calendar', 'v3', credentials=credentials)
-
-    # 'bluewhale.kr_0gbuu26gl7vue837u7f07mn360@group.calendar.google.com'  <== AIMMO Google calednar id
-    events_result = service.events().list(
-        calendarId='primary', timeMin=datetime.datetime(2020, 1, 1).isoformat() + 'Z', showDeleted=True,
-        timeMax=datetime.datetime(2020, 2, 28).isoformat() + 'Z', maxResults=2500, singleEvents=True,
-        orderBy='startTime'
-    ).execute()
-    events = events_result.get('items', [])
-
-    session['credentials'] = credentials_to_dict(credentials)
-    session['events'] = events
-
-    return events
 
 
 @google_api_bp.route('/authorize')
@@ -48,25 +20,6 @@ def authorize():
     session['state'] = state
 
     return redirect(authorization_url)
-
-
-@pytest.fixture(scope='module')
-def test_credential():
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file('application/oauth_cred.json', scopes=SCOPES)
-    flow.redirect_uri = url_for('google_api.oauth2callback', _external=True)
-
-    authorization_url, state = flow.authorization_url(
-        access_type='online',
-        include_granted_scopes='true')
-
-    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file('application/oauth_cred.json', scopes=SCOPES,
-                                                                   state=state)
-    flow.redirect_uri = url_for('google_api.oauth2callback', _external=True)
-
-    authorization_response = request.url
-    flow.fetch_token(authorization_response=authorization_response)
-
-    return flow.credentials
 
 
 @google_api_bp.route('/oauth2callback')
@@ -122,16 +75,10 @@ def credentials_to_dict(credentials):
 
 def print_index_table():
     return ('<table>' +
-            '<tr><td><a href="/service">Test an API request</a></td>' +
-            '<td>Submit an API request and see a formatted JSON response. ' +
-            '    Go through the authorization flow if there are no stored ' +
-            '    credentials for the user.</td></tr>' +
-            '<tr><td><a href="/authorize">Test the auth flow directly</a></td>' +
-            '<td>Go directly to the authorization flow. If there are stored ' +
-            '    credentials, you still might not be prompted to reauthorize ' +
-            '    the application.</td></tr>' +
-            '<tr><td><a href="/clear">Clear Flask session credentials</a></td>' +
-            '<td>Clear the access token currently stored in the user session. ' +
-            '    After clearing the token, if you <a href="/test">test the ' +
-            '    API request</a> again, you should go back to the auth flow.' +
+            '<tr><td><a href="/authorize">사용자 인증</a></td>' +
+            '<td> 사용자 Google social login. 인증되어 token이 저장되면, 다시 인증하라는 메세지가 ' +
+            '표시되지 않을수도 있다. </td></tr>' +
+            '<tr><td><a href="/clear">자격증명 지우기</a></td>' +
+            '<td> 현재 저장되어있는 인증 token을 지운다. ' +
+            'token을 지우면 다시 인증을 해야한다.' +
             '</td></tr></table>')

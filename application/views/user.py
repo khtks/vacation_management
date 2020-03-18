@@ -1,4 +1,4 @@
-import requests
+from application.service import RegisterUser
 from application import db, api
 from application.models.user import User
 from application.schemata.user import UserSchema
@@ -11,6 +11,7 @@ user_schema = UserSchema()
 session = db.session
 api = api(user_bp)
 headers = {'Content-Type': 'text/html'}
+register = RegisterUser()
 
 
 class AllUsers(Resource):
@@ -24,20 +25,7 @@ class AllUsers(Resource):
 
     def post(self):
         data = request.form.to_dict()
-
-        if data.get('entry_date'):
-            data['entry_date'] = datetime.datetime.strptime(data.get('entry_date'), "%Y-%m-%d").isoformat()
-        else :
-            data['entry_date'] = datetime.datetime.today().isoformat()
-        if not User.query.first():
-            data['admin'] = True
-
-        user = user_schema.load(data)
-        db.session.add(user)
-        db.session.commit()
-
-        with current_app.test_client() as client:
-            client.post(url_for('remain_vacation.user_vacation'), data=dict(id=user.id))
+        user = register.run(data)
 
         return make_response(render_template('user/specific_user_result.html', title="생성된 사용자", result=user, request_user=user, id=str(user.id)), 201, headers)
 

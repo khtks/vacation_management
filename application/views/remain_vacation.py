@@ -41,20 +41,6 @@ class UserVacation(Resource):
                 else:
                     return make_response(render_template('user/specific_user_result.html', title="남은 휴가", result=remain_vacation, request_user=request_user, id=str(request_user.id)), 200, headers)
 
-    def post(self, id=None):
-        if id:
-            user = User.query.get(id)
-        else:
-            user = User.query.get(request.form.get('id'))
-
-        years, total, remain = calculate_vacation(user)
-
-        remain_vacation = RemainVacation(user=user, number_of_years=years, total_vacation=total, remain_vacation=remain)
-        db.session.add(remain_vacation)
-        db.session.commit()
-
-        return Response(remain_vacation_schema.dumps(remain_vacation), 201, mimetype='application/json')
-
     def put(self, id=None):
         if id:
             user = User.query.get(id)
@@ -102,7 +88,7 @@ def calculate_vacation(user):
         elif flag == 0.0:
             total = vacation
 
-    remain = total - len(UsedVacation.query.filter_by(user=user, type="연차").all())
-    remain = remain - (0.5 * len(UsedVacation.query.filter_by(user=user, type="반차").all()))
+    remain = total - len(UsedVacation.query.filter_by(user=user, kind="연차").all())
+    remain = remain - (0.5 * len(UsedVacation.query.filter_by(user=user, kind="반차").all()))
 
     return years, total, remain

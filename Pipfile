@@ -26,10 +26,9 @@ google-auth-oauthlib = "*"
 pytest-bdd = "*"
 google-auth = "*"
 google = "*"
-pyjwt = "*"
-pyopenssl = "*"
-mock = "*"
 oauth2client = "*"
+pyopenssl = "*"
+arrow = "*"
 
 [requires]
 python_version = "3.8"
