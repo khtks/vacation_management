@@ -12,8 +12,8 @@
   3.	Mysql, Mysqlclient 
       - python에서 mysql과 연동하여 db를 사용하기 위한 라이브러리
   4.	Flask-marshmallow, Marshmallow-sqlalchemy 
-      - flask와 sqlalchemy에서 serialize와 deserialize를 사용하기 위한 라이브러리 / marshmallow-sqlalchemy를 
-   이용하면 sqlalchemy model을 이용해 schema를 만들 수 있다
+      - flask와 sqlalchemy에서 serialize와 deserialize를 사용하기 위한 라이브러리 / marshmallow-sqlalchemy를 이용하면 sqlalchemy model을 
+        이용해 schema를 만들 수 있다
   5.	Flask-migrate 
       - flask에서 migration을 사용하기 위한 라이브러리
   6.	Flask-restful 
@@ -27,15 +27,15 @@
       - python에서 ssl을 이용하기 위한 라이브러리
 
 3)	초기 스팩
-  1.	공통(일반 사용자, 관리자)
-      - 구글 소셜 로그인으로 사용자 인증
-      - 사용자 등록(자신의 정보 등록)
-      - 자신의 남은 휴가 확인
-      - 자신이 사용한 휴가 확인
-      - 일정한 시간마다 휴가를 동기화해 DB에 저장
-  2.	관리자
-      - 다른 사용자 CRUD
-      - 다른 사용자의 사용한 휴가, 남은 휴가를 확인 가능하다
+    1.	공통(일반 사용자, 관리자)
+        - 구글 소셜 로그인으로 사용자 인증
+        - 사용자 등록(자신의 정보 등록)
+        - 자신의 남은 휴가 확인
+        - 자신이 사용한 휴가 확인
+        - 일정한 시간마다 휴가를 동기화해 DB에 저장
+    2.	관리자
+        - 다른 사용자 CRUD
+        - 다른 사용자의 사용한 휴가, 남은 휴가를 확인 가능하다
 
 4)	현재 구현 기능
     1.	구글 소셜 로그인을 통해 사용자 인증 
